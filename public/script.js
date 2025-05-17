@@ -1,11 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('contact-form');
-  const toggleBtn = document.getElementById('dark-mode-toggle');
 
-  // Form submission and validation
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
+    // Clear previous alerts
     const existingAlert = document.querySelector('.form-alert');
     if (existingAlert) existingAlert.remove();
 
@@ -23,8 +22,19 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    showAlert('Message sent successfully!', 'success');
-    form.reset();
+    // This is where you add the emailjs.send call
+    emailjs.send("service_kd7wrgp", "template_keorw27", {
+      from_name: name,
+      from_email: email,
+      message: message
+    })
+    .then(() => {
+      showAlert('Message sent successfully!', 'success');
+      form.reset();
+    }, (error) => {
+      showAlert('Failed to send message, please try again.', 'error');
+      console.error(error);
+    });
   });
 
   function showAlert(message, type) {
@@ -32,36 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
     alertDiv.classList.add('form-alert', type);
     alertDiv.textContent = message;
     form.prepend(alertDiv);
-
-    setTimeout(() => {
-      alertDiv.remove();
-    }, 3000);
+    setTimeout(() => alertDiv.remove(), 3000);
   }
 
   function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email.toLowerCase());
-  }
-
-  // Dark mode toggle
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-
-      if (document.body.classList.contains('dark-mode')) {
-        localStorage.setItem('theme', 'dark');
-        toggleBtn.textContent = '☀️';
-      } else {
-        localStorage.setItem('theme', 'light');
-        toggleBtn.textContent = '🌙';
-      }
-    });
-
-    // Load saved theme
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      document.body.classList.add('dark-mode');
-      toggleBtn.textContent = '☀️';
-    }
   }
 });

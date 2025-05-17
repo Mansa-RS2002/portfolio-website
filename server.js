@@ -37,5 +37,5 @@ app.post('/send', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://192.168.135.112:${PORT}`);
 });
